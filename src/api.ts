@@ -1,69 +1,45 @@
 import crypto from "crypto";
 import express from "express";
 import pgp from "pg-promise";
-import { validate } from "./validateCpf";
+import { validateCpf } from "./validateCpf";
 const app = express();
 app.use(express.json());
 
+const isValidFullName = (name: string) => {
+  return name.match(/[a-zA-Z] [a-zA-Z]+/)
+}
+function isValidEmail(email: string) {
+  return email.match(/^(.+)@(.+)$/)
+}
+function isValidCarPlate(carPlate: string) {
+  return carPlate.match(/[A-Z]{3}[0-9]{4}/)
+}
 app.post("/signup", async function (req, res) {
-	let result;
-	const connection = pgp()("postgres://postgres:postgres@localhost:5432/ccca16");
-	try {
-		const id = crypto.randomUUID();
+  const connection = pgp()("postgres://postgres:postgres@localhost:5432/ccca16");
+  try {
+    const id = crypto.randomUUID();
+    const [account] = await connection.query("select * from ccca16.account where email = $1", [req.body.email]);
+    if (account) {
+      return res.status(422).send("-4");
+    }
+    if (!isValidFullName(req.body.name)) {
+      return res.status(422).send("-3");
+    }
+    if (!isValidEmail(req.body.email)) {
+      return res.status(422).send("-2");
+    }
+    if (!validateCpf(req.body.cpf)) {
+      return res.status(422).send("-1");
+    }
+    if (req.body.isDriver && !isValidCarPlate(req.body.carPlate)) {
+      return res.status(422).send("-5");
+    }
+    await connection.query("insert into ccca16.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)", [id, req.body.name, req.body.email, req.body.cpf, req.body.carPlate, !!req.body.isPassenger, !!req.body.isDriver]);
+    return res.json({ accountId: id })
 
-		const [acc] = await connection.query("select * from ccca16.account where email = $1", [req.body.email]);
-		if (!acc) {
-
-			if (req.body.name.match(/[a-zA-Z] [a-zA-Z]+/)) {
-				if (req.body.email.match(/^(.+)@(.+)$/)) {
-
-					if (validate(req.body.cpf)) {
-						if (req.body.isDriver) {
-							if (req.body.carPlate.match(/[A-Z]{3}[0-9]{4}/)) {
-								await connection.query("insert into ccca16.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)", [id, req.body.name, req.body.email, req.body.cpf, req.body.carPlate, !!req.body.isPassenger, !!req.body.isDriver]);
-								
-								const obj = {
-									accountId: id
-								};
-								result = obj;
-							} else {
-								// invalid car plate
-								result = -5;
-							}
-						} else {
-							await connection.query("insert into ccca16.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)", [id, req.body.name, req.body.email, req.body.cpf, req.body.carPlate, !!req.body.isPassenger, !!req.body.isDriver]);
-
-							const obj = {
-								accountId: id
-							};
-							result = obj;
-						}
-					} else {
-						// invalid cpf
-						result = -1;
-					}
-				} else {
-					// invalid email
-					result = -2;
-				}
-
-			} else {
-				// invalid name
-				result = -3;
-			}
-
-		} else {
-			// already exists
-			result = -4;
-		}
-		if (typeof result === "number") {
-			res.status(422).send(result + "");
-		} else {
-			res.json(result);
-		}
-	} finally {
-		await connection.$pool.end();
-	}
+  } finally {
+    await connection.$pool.end();
+  }
 });
 
 app.listen(3000);
