@@ -82,7 +82,7 @@ test("Should throw an error when creating account with an invalid name", async f
   expect(output.data).toBe(-3)
 });
 
-test("Should throw an error when creating account with an invalid name", async function () {
+test("Should throw an error when creating account with an email already registered", async function () {
 	const input = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
