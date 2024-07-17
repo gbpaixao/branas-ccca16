@@ -1,4 +1,5 @@
 import { validateCpf } from "../src/validateCpf";
+import { GetAccount } from "./GetAccount";
 
 export class Signup {
   id: string;
@@ -16,29 +17,15 @@ export class Signup {
   }
 
   async execute(dbConnection: any) {
-    const account = await this.findAccount(dbConnection)
-    if (account) {
-      return { status: 422, error: "-4" }
-    }
-    if (!this.isValidFullName()) {
-      return { status: 422, error: "-3" }
-    }
-    if (!this.isValidEmail()) {
-      return { status: 422, error: "-2" }
-    }
-    if (!validateCpf(this.cpf)) {
-      return { status: 422, error: "-1" }
-    }
-    if (this.isDriver && !this.isValidCarPlate()) {
-      return { status: 422, error: "-5" }
-    }
+    const getAccount = new GetAccount(this.email)
+    const account = await getAccount.execute(dbConnection)
+    if (account) return { status: 422, error: "-4" }
+    if (!this.isValidFullName()) return { status: 422, error: "-3" }
+    if (!this.isValidEmail()) return { status: 422, error: "-2" }
+    if (!validateCpf(this.cpf)) return { status: 422, error: "-1" }
+    if (this.isDriver && !this.isValidCarPlate()) return { status: 422, error: "-5" }
     await this.insertDB(dbConnection)
     return { status: 200, accountId: this.id }
-  }
-
-  private async findAccount(dbConnection: any) {
-    const [account] = await dbConnection.query("select * from ccca16.account where email = $1", [this.email]);
-    return account
   }
 
   private async insertDB(dbConnection: any) {
