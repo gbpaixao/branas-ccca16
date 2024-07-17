@@ -11,9 +11,14 @@ test("Should create passenger account", async function () {
 		cpf: "87748248800",
 		isPassenger: true
 	};
-	const output = await axios.post("http://localhost:3000/signup", input);
-  expect(output.status).toBe(200)
-  expect(output.data).toHaveProperty('accountId')
+	const responseSignup = await axios.post("http://localhost:3000/signup", input);
+  expect(responseSignup.status).toBe(200)
+  expect(responseSignup.data).toHaveProperty('accountId')
+  const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${responseSignup.data.accountId}`)
+  expect(responseGetAccount.data.name).toBe(input.name)
+  expect(responseGetAccount.data.email).toBe(input.email)
+  expect(responseGetAccount.data.cpf).toBe(input.cpf)
+  expect(responseGetAccount.data.is_passenger).toBe(input.isPassenger)
 });
 
 test("Should create driver account", async function () {
@@ -24,9 +29,15 @@ test("Should create driver account", async function () {
     carPlate: 'QWE1234',
 		isDriver: true
 	};
-	const output = await axios.post("http://localhost:3000/signup", input);
-	expect(output.status).toBe(200)
-  expect(output.data).toHaveProperty('accountId')
+	const responseSignup = await axios.post("http://localhost:3000/signup", input);
+	expect(responseSignup.status).toBe(200)
+  expect(responseSignup.data).toHaveProperty('accountId')
+  const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${responseSignup.data.accountId}`)
+  expect(responseGetAccount.data.name).toBe(input.name)
+  expect(responseGetAccount.data.email).toBe(input.email)
+  expect(responseGetAccount.data.cpf).toBe(input.cpf)
+  expect(responseGetAccount.data.car_plate).toBe(input.carPlate)
+  expect(responseGetAccount.data.is_driver).toBe(input.isDriver)
 });
 
 

@@ -17,8 +17,8 @@ export class Signup {
   }
 
   async execute(dbConnection: any) {
-    const getAccount = new GetAccount(this.email)
-    const account = await getAccount.execute(dbConnection)
+    const getAccount = new GetAccount()
+    const account = await getAccount.findAccountByEmail(dbConnection, this.email)
     if (account) throw new Error("Email has already been registered")
     if (!this.isValidFullName()) throw new Error("Invalid name")
     if (!this.isValidEmail()) throw new Error("Invalid email")
