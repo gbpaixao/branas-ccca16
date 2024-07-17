@@ -7,8 +7,7 @@ const app = express();
 app.use(express.json());
 
 app.post("/signup", async function (req, res) {
-  const { name, email, cpf, carPlate, password, isPassenger, isDriver } = req.body
-  const signup = new Signup(name, email, cpf, carPlate, password, isPassenger, isDriver)
+  const signup = new Signup(req.body)
   const dbConnection = pgp()("postgres://postgres:postgres@localhost:5432/ccca16");
   try {
     const response = await signup.execute(dbConnection)
@@ -23,11 +22,10 @@ app.post("/signup", async function (req, res) {
 });
 
 app.get("/accounts/:accountId", async function (req, res) {
-  const { accountId } = req.params
   const dbConnection = pgp()("postgres://postgres:postgres@localhost:5432/ccca16");
   try {
     const getAccount = new GetAccount()
-    const response = await getAccount.execute(dbConnection, accountId)
+    const response = await getAccount.execute(dbConnection, req.params.accountId)
     return res.json(response)
   } finally {
     await dbConnection.$pool.end();
