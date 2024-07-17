@@ -11,8 +11,8 @@ export class Signup {
   }
 
   async execute() {
-    const account = await findAccountByEmail(this.input.email)
-    if (account) throw new Error("Email has already been registered")
+    const existingAccount = await findAccountByEmail(this.input.email)
+    if (existingAccount) throw new Error("Account already exists")
     if (!this.isValidFullName()) throw new Error("Invalid name")
     if (!this.isValidEmail()) throw new Error("Invalid email")
     if (!validateCpf(this.input.cpf)) throw new Error("Invalid cpf")

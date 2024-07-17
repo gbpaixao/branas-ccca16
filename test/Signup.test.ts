@@ -102,5 +102,5 @@ test("Should throw an error when creating account with an email already register
 	const signup = new Signup(input);
   await signup.execute()
   const output = signup.execute()
-  await expect(output).rejects.toThrow("Email has already been registered")
+  await expect(output).rejects.toThrow("Account already exists")
 });

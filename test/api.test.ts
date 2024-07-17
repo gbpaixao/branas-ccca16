@@ -103,5 +103,5 @@ test("Should throw an error when creating account with an email already register
 	await axios.post("http://localhost:3000/signup", input);
 	const output = await axios.post("http://localhost:3000/signup", input);
 	expect(output.status).toBe(422)
-  expect(output.data).toBe("Email has already been registered")
+  expect(output.data).toBe("Account already exists")
 });
