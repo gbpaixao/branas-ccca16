@@ -1,4 +1,3 @@
-import pgPromise from "pg-promise";
 import { Signup } from "../usecases/Signup";
 import { GetAccount } from "../usecases/GetAccount";
 
@@ -10,11 +9,10 @@ test("Should create passenger account", async function () {
 		isPassenger: true
 	};
 	const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  const outputSignup = await signup.execute(dbConnection)
+  const outputSignup = await signup.execute()
   expect(outputSignup).toHaveProperty('accountId')
   const getAccount = new GetAccount()
-  const outputGetAccount = await getAccount.execute(dbConnection, outputSignup.accountId)
+  const outputGetAccount = await getAccount.execute(outputSignup.accountId)
   expect(outputGetAccount.name).toBe(input.name)
   expect(outputGetAccount.email).toBe(input.email)
   expect(outputGetAccount.cpf).toBe(input.cpf)
@@ -30,11 +28,10 @@ test("Should create driver account", async function () {
 		isDriver: true
 	};
   const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  const outputSignup = await signup.execute(dbConnection)
+  const outputSignup = await signup.execute()
   expect(outputSignup).toHaveProperty('accountId')
   const getAccount = new GetAccount()
-  const outputGetAccount = await getAccount.execute(dbConnection, outputSignup.accountId)
+  const outputGetAccount = await getAccount.execute(outputSignup.accountId)
   expect(outputGetAccount.name).toBe(input.name)
   expect(outputGetAccount.email).toBe(input.email)
   expect(outputGetAccount.cpf).toBe(input.cpf)
@@ -52,8 +49,7 @@ test("Should throw an error when creating driver account with an invalid car pla
 		isDriver: true
 	};
 	const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  const output = signup.execute(dbConnection)
+  const output = signup.execute()
   await expect(output).rejects.toThrow("Invalid car plate")
 });
 
@@ -66,8 +62,7 @@ test("Should throw an error when creating account with an invalid cpf", async fu
 		isDriver: true
 	};
 	const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  const output = signup.execute(dbConnection)
+  const output = signup.execute()
   await expect(output).rejects.toThrow("Invalid cpf")
 });
 
@@ -80,8 +75,7 @@ test("Should throw an error when creating account with an invalid email", async 
 		isDriver: true
 	};
   const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  const output = signup.execute(dbConnection)
+  const output = signup.execute()
   await expect(output).rejects.toThrow("Invalid email")
 });
 
@@ -94,8 +88,7 @@ test("Should throw an error when creating account with an invalid name", async f
 		isDriver: true
 	};
 	const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  const output = signup.execute(dbConnection)
+  const output = signup.execute()
   await expect(output).rejects.toThrow("Invalid name")
 });
 
@@ -107,8 +100,7 @@ test("Should throw an error when creating account with an email already register
 		isPassenger: true
 	};
 	const signup = new Signup(input);
-  const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
-  await signup.execute(dbConnection)
-  const output = signup.execute(dbConnection)
+  await signup.execute()
+  const output = signup.execute()
   await expect(output).rejects.toThrow("Email has already been registered")
 });
