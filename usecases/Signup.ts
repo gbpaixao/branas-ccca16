@@ -19,13 +19,13 @@ export class Signup {
   async execute(dbConnection: any) {
     const getAccount = new GetAccount(this.email)
     const account = await getAccount.execute(dbConnection)
-    if (account) return { status: 422, error: "-4" }
-    if (!this.isValidFullName()) return { status: 422, error: "-3" }
-    if (!this.isValidEmail()) return { status: 422, error: "-2" }
-    if (!validateCpf(this.cpf)) return { status: 422, error: "-1" }
-    if (this.isDriver && !this.isValidCarPlate()) return { status: 422, error: "-5" }
+    if (account) throw new Error("Email has already been registered")
+    if (!this.isValidFullName()) throw new Error("Invalid name")
+    if (!this.isValidEmail()) throw new Error("Invalid email")
+    if (!validateCpf(this.cpf)) throw new Error("Invalid cpf")
+    if (this.isDriver && !this.isValidCarPlate()) throw new Error("Invalid car plate")
     await this.insertDB(dbConnection)
-    return { status: 200, accountId: this.id }
+    return { accountId: this.id }
   }
 
   private async insertDB(dbConnection: any) {

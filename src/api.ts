@@ -11,8 +11,10 @@ app.post("/signup", async function (req, res) {
   const dbConnection = pgp()("postgres://postgres:postgres@localhost:5432/ccca16");
   try {
     const response = await signup.execute(dbConnection)
-    if (response.status === 422) return res.status(response.status).send(response.error)
-    else return res.status(200).json({ accountId: response.accountId })
+    return res.status(200).json(response)
+  }
+  catch (error) {
+    if (error instanceof Error) return res.status(422).send(error.message)
   }
   finally {
     await dbConnection.$pool.end();

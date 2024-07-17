@@ -40,7 +40,7 @@ test("Should throw an error when creating driver account with an invalid car pla
 	};
 	const output = await axios.post("http://localhost:3000/signup", input);
 	expect(output.status).toBe(422)
-  expect(output.data).toBe(-5)
+  expect(output.data).toBe("Invalid car plate")
 });
 
 test("Should throw an error when creating account with an invalid cpf", async function () {
@@ -53,7 +53,7 @@ test("Should throw an error when creating account with an invalid cpf", async fu
 	};
 	const output = await axios.post("http://localhost:3000/signup", input);
 	expect(output.status).toBe(422)
-  expect(output.data).toBe(-1)
+  expect(output.data).toBe("Invalid cpf")
 });
 
 test("Should throw an error when creating account with an invalid email", async function () {
@@ -66,7 +66,7 @@ test("Should throw an error when creating account with an invalid email", async 
 	};
 	const output = await axios.post("http://localhost:3000/signup", input);
 	expect(output.status).toBe(422)
-  expect(output.data).toBe(-2)
+  expect(output.data).toBe("Invalid email")
 });
 
 test("Should throw an error when creating account with an invalid name", async function () {
@@ -79,7 +79,7 @@ test("Should throw an error when creating account with an invalid name", async f
 	};
 	const output = await axios.post("http://localhost:3000/signup", input);
 	expect(output.status).toBe(422)
-  expect(output.data).toBe(-3)
+  expect(output.data).toBe("Invalid name")
 });
 
 test("Should throw an error when creating account with an email already registered", async function () {
@@ -92,5 +92,5 @@ test("Should throw an error when creating account with an email already register
 	await axios.post("http://localhost:3000/signup", input);
 	const output = await axios.post("http://localhost:3000/signup", input);
 	expect(output.status).toBe(422)
-  expect(output.data).toBe(-4)
+  expect(output.data).toBe("Email has already been registered")
 });
