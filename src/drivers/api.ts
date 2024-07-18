@@ -1,7 +1,7 @@
 import express from "express";
 import { GetAccount } from "../application/GetAccount";
-import { AccountDAODatabase } from "../resources/AccountDAO";
 import { Signup } from "../application/Signup";
+import { AccountDAODatabase } from "../resources/AccountDAO";
 import { MailerGatewayMemory } from "../resources/MailerGateway";
 
 const app = express();
