@@ -1,4 +1,4 @@
-import { AccountDAO } from "../src/resources";
+import { AccountDAO } from "../resources/AccountDAO";
 
 export class GetAccount {
   constructor(private readonly accountDAO: AccountDAO) {}

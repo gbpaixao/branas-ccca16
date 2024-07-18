@@ -1,4 +1,4 @@
-import { AccountDAODatabase } from "../src/resources";
+import { AccountDAODatabase } from "../src/resources/AccountDAO";
 
 test("Should create a record on 'account' table and find by id", async () => {
   const account = {

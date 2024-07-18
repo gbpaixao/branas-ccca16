@@ -1,6 +1,6 @@
 import { Signup } from "../usecases/Signup";
-import { GetAccount } from "../usecases/GetAccount";
-import { AccountDAOMemory } from "../src/resources";
+import { GetAccount } from "../src/application/GetAccount";
+import { AccountDAOMemory } from "../src/resources/AccountDAO";
 
 let signup: Signup
 let getAccount: GetAccount

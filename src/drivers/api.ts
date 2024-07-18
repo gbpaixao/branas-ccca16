@@ -1,7 +1,7 @@
 import express from "express";
-import { Signup } from "../usecases/Signup";
-import { GetAccount } from "../usecases/GetAccount";
-import { AccountDAODatabase } from "./resources";
+import { Signup } from "../../usecases/Signup";
+import { GetAccount } from "../application/GetAccount";
+import { AccountDAODatabase } from "../resources/AccountDAO";
 
 const app = express();
 app.use(express.json());

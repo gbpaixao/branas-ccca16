@@ -1,5 +1,5 @@
-import { AccountDAO } from "../src/resources";
-import { validateCpf } from "../src/validateCpf";
+import { AccountDAO } from "../resources/AccountDAO";
+import { validateCpf } from "./validateCpf";
 
 export class Signup {
   id: string;
