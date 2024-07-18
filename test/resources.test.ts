@@ -1,4 +1,4 @@
-import { createAccount, findAccountByEmail, findAccountById } from "../src/resources";
+import { AccountDAODatabase } from "../src/resources";
 
 test("Should create a record on 'account' table and find by id", async () => {
   const account = {
@@ -8,8 +8,9 @@ test("Should create a record on 'account' table and find by id", async () => {
 		cpf: "87748248800",
 		isPassenger: true
 	};
-  await createAccount(account)
-  const savedAccount = await findAccountById(account.id)
+  const accountDAO = new AccountDAODatabase()
+  await accountDAO.createAccount(account)
+  const savedAccount = await accountDAO.findAccountById(account.id)
   expect(savedAccount.account_id).toBe(account.id)
   expect(savedAccount.name).toBe(account.name)
   expect(savedAccount.email).toBe(account.email)
@@ -25,8 +26,9 @@ test("Should create a record on 'account' table and find by email", async () => 
 		cpf: "87748248800",
 		isPassenger: true
 	};
-  await createAccount(account)
-  const savedAccount = await findAccountByEmail(account.email)
+  const accountDAO = new AccountDAODatabase()
+  await accountDAO.createAccount(account)
+  const savedAccount = await accountDAO.findAccountByEmail(account.email)
   expect(savedAccount.account_id).toBe(account.id)
   expect(savedAccount.name).toBe(account.name)
   expect(savedAccount.email).toBe(account.email)

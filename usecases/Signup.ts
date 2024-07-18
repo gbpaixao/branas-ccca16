@@ -1,35 +1,35 @@
-import { createAccount, findAccountByEmail } from "../src/resources";
+import { AccountDAODatabase } from "../src/resources";
 import { validateCpf } from "../src/validateCpf";
 
 export class Signup {
   id: string;
 
   constructor(
-    private readonly input: any,
+    private readonly accountDAO: AccountDAODatabase,
   ) {
     this.id = crypto.randomUUID();
   }
 
-  async execute() {
-    const existingAccount = await findAccountByEmail(this.input.email)
+  async execute(input: any) {
+    const existingAccount = await this.accountDAO.findAccountByEmail(input.email)
     if (existingAccount) throw new Error("Account already exists")
-    if (!this.isValidFullName()) throw new Error("Invalid name")
-    if (!this.isValidEmail()) throw new Error("Invalid email")
-    if (!validateCpf(this.input.cpf)) throw new Error("Invalid cpf")
-    if (this.input.isDriver && !this.isValidCarPlate()) throw new Error("Invalid car plate")
-    await createAccount({...this.input, id: this.id})
+    if (!this.isValidFullName(input.name)) throw new Error("Invalid name")
+    if (!this.isValidEmail(input.email)) throw new Error("Invalid email")
+    if (!validateCpf(input.cpf)) throw new Error("Invalid cpf")
+    if (input.isDriver && !this.isValidCarPlate(input.carPlate)) throw new Error("Invalid car plate")
+    await this.accountDAO.createAccount({...input, id: this.id})
     return { accountId: this.id }
   }
 
-  private isValidFullName() {
-    return this.input.name.match(/[a-zA-Z] [a-zA-Z]+/)
+  private isValidFullName(name: string) {
+    return name.match(/[a-zA-Z] [a-zA-Z]+/)
   }
 
-  private isValidEmail() {
-    return this.input.email.match(/^(.+)@(.+)$/)
+  private isValidEmail(email: string) {
+    return email.match(/^(.+)@(.+)$/)
   }
 
-  private isValidCarPlate() {
-    return this.input.carPlate.match(/[A-Z]{3}[0-9]{4}/)
+  private isValidCarPlate(carPlate: string) {
+    return carPlate.match(/[A-Z]{3}[0-9]{4}/)
   }
 }

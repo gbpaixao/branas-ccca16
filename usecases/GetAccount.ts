@@ -1,10 +1,10 @@
-import { findAccountById } from "../src/resources";
+import { AccountDAODatabase } from "../src/resources";
 
 export class GetAccount {
-  constructor() {}
+  constructor(private readonly accountDAO: AccountDAODatabase) {}
 
   async execute(accountId: string) {
-    return await findAccountById(accountId)
+    return await this.accountDAO.findAccountById(accountId)
   }
 
 
