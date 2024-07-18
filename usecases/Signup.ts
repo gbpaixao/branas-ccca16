@@ -1,11 +1,11 @@
-import { AccountDAODatabase } from "../src/resources";
+import { AccountDAO } from "../src/resources";
 import { validateCpf } from "../src/validateCpf";
 
 export class Signup {
   id: string;
 
   constructor(
-    private readonly accountDAO: AccountDAODatabase,
+    private readonly accountDAO: AccountDAO,
   ) {
     this.id = crypto.randomUUID();
   }
