@@ -1,6 +1,15 @@
 import { Signup } from "../usecases/Signup";
 import { GetAccount } from "../usecases/GetAccount";
-import { AccountDAODatabase } from "../src/resources";
+import { AccountDAOMemory } from "../src/resources";
+
+let signup: Signup
+let getAccount: GetAccount
+
+beforeEach(async () => {
+  const accountDAO = new AccountDAOMemory()
+	signup = new Signup(accountDAO);
+  getAccount = new GetAccount(accountDAO)
+})
 
 test("Should create passenger account", async function () {
 	const input = {
@@ -9,16 +18,13 @@ test("Should create passenger account", async function () {
 		cpf: "87748248800",
 		isPassenger: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   const outputSignup = await signup.execute(input)
   expect(outputSignup).toHaveProperty('accountId')
-  const getAccount = new GetAccount(accountDAO)
   const outputGetAccount = await getAccount.execute(outputSignup.accountId)
   expect(outputGetAccount.name).toBe(input.name)
   expect(outputGetAccount.email).toBe(input.email)
   expect(outputGetAccount.cpf).toBe(input.cpf)
-  expect(outputGetAccount.is_passenger).toBe(input.isPassenger)
+  expect(outputGetAccount.isPassenger).toBe(input.isPassenger)
 });
 
 test("Should create driver account", async function () {
@@ -29,17 +35,14 @@ test("Should create driver account", async function () {
     carPlate: 'QWE1234',
 		isDriver: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   const outputSignup = await signup.execute(input)
   expect(outputSignup).toHaveProperty('accountId')
-  const getAccount = new GetAccount(accountDAO)
   const outputGetAccount = await getAccount.execute(outputSignup.accountId)
   expect(outputGetAccount.name).toBe(input.name)
   expect(outputGetAccount.email).toBe(input.email)
   expect(outputGetAccount.cpf).toBe(input.cpf)
-  expect(outputGetAccount.car_plate).toBe(input.carPlate)
-  expect(outputGetAccount.is_driver).toBe(input.isDriver)
+  expect(outputGetAccount.carPlate).toBe(input.carPlate)
+  expect(outputGetAccount.isDriver).toBe(input.isDriver)
 });
 
 
@@ -51,8 +54,6 @@ test("Should throw an error when creating driver account with an invalid car pla
     carPlate: 'QWER234',
 		isDriver: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   const output = signup.execute(input)
   await expect(output).rejects.toThrow("Invalid car plate")
 });
@@ -65,8 +66,6 @@ test("Should throw an error when creating account with an invalid cpf", async fu
     carPlate: 'QWE1234',
 		isDriver: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   const output = signup.execute(input)
   await expect(output).rejects.toThrow("Invalid cpf")
 });
@@ -79,8 +78,6 @@ test("Should throw an error when creating account with an invalid email", async 
     carPlate: 'QWE1234',
 		isDriver: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   const output = signup.execute(input)
   await expect(output).rejects.toThrow("Invalid email")
 });
@@ -93,8 +90,6 @@ test("Should throw an error when creating account with an invalid name", async f
     carPlate: 'QWE1234',
 		isDriver: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   const output = signup.execute(input)
   await expect(output).rejects.toThrow("Invalid name")
 });
@@ -106,8 +101,6 @@ test("Should throw an error when creating account with an email already register
 		cpf: "87748248800",
 		isPassenger: true
 	};
-  const accountDAO = new AccountDAODatabase()
-	const signup = new Signup(accountDAO);
   await signup.execute(input)
   const output = signup.execute(input)
   await expect(output).rejects.toThrow("Account already exists")

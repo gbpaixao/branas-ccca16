@@ -30,3 +30,24 @@ export class AccountDAODatabase implements AccountDAO {
     return response
   }
 }
+
+export class AccountDAOMemory implements AccountDAO {
+  accounts: any[]
+  
+  constructor() {
+    this.accounts = []
+  }
+  
+  findAccountById(accountId: string): Promise<any> {
+    return this.accounts.find(account => account.id === accountId)
+  }
+  
+  findAccountByEmail(email: string): Promise<any> {
+    return this.accounts.find(account => account.email === email)
+  }
+  
+  createAccount(input: any): Promise<any> {
+    this.accounts.push(input)
+    return input
+  }
+}
