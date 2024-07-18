@@ -1,13 +1,16 @@
-import { Signup } from "../usecases/Signup";
+
 import { GetAccount } from "../src/application/GetAccount";
+import { Signup } from "../src/application/Signup";
 import { AccountDAOMemory } from "../src/resources/AccountDAO";
+import { MailerGatewayMemory } from "../src/resources/MailerGateway";
 
 let signup: Signup
 let getAccount: GetAccount
 
 beforeEach(async () => {
   const accountDAO = new AccountDAOMemory()
-	signup = new Signup(accountDAO);
+  const mailerGateway = new MailerGatewayMemory()
+	signup = new Signup(accountDAO, mailerGateway);
   getAccount = new GetAccount(accountDAO)
 })
 

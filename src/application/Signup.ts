@@ -1,24 +1,25 @@
 import { AccountDAO } from "../resources/AccountDAO";
+import { MailerGateway } from "../resources/MailerGateway";
 import { validateCpf } from "./validateCpf";
 
 export class Signup {
-  id: string;
-
   constructor(
     private readonly accountDAO: AccountDAO,
-  ) {
-    this.id = crypto.randomUUID();
-  }
+    private readonly mailerGateway: MailerGateway,
+  ) {}
 
   async execute(input: any) {
-    const existingAccount = await this.accountDAO.findAccountByEmail(input.email)
+    const account = input
+    account.id = crypto.randomUUID()
+    const existingAccount = await this.accountDAO.findAccountByEmail(account.email)
     if (existingAccount) throw new Error("Account already exists")
-    if (!this.isValidFullName(input.name)) throw new Error("Invalid name")
-    if (!this.isValidEmail(input.email)) throw new Error("Invalid email")
-    if (!validateCpf(input.cpf)) throw new Error("Invalid cpf")
-    if (input.isDriver && !this.isValidCarPlate(input.carPlate)) throw new Error("Invalid car plate")
-    await this.accountDAO.createAccount({...input, id: this.id})
-    return { accountId: this.id }
+    if (!this.isValidFullName(account.name)) throw new Error("Invalid name")
+    if (!this.isValidEmail(account.email)) throw new Error("Invalid email")
+    if (!validateCpf(account.cpf)) throw new Error("Invalid cpf")
+    if (account.isDriver && !this.isValidCarPlate(account.carPlate)) throw new Error("Invalid car plate")
+    await this.accountDAO.createAccount(account)
+  await this.mailerGateway.send(account.email, 'Welcome', "")
+    return { accountId: account.id }
   }
 
   private isValidFullName(name: string) {
