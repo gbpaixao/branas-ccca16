@@ -157,7 +157,7 @@ test("Should create passenger account com spy", async function () {
   jest.restoreAllMocks();
 });
 
-test.skip("Should create passenger account com mock", async function () {
+test("Should create passenger account com mock", async function () {
   const input = {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,
