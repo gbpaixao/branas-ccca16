@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines" : { 
+    "npm" : ">=10.7.0",
+    "node" : ">=v20.15.1"
+  },
   "scripts": {
     "test": "jest --watchAll",
     "start": "ts-node-dev --respawn --transpile-only src/drivers/api.ts"
