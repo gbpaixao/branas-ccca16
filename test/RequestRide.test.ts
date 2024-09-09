@@ -1,92 +1,88 @@
-import { GetAccount } from "../src/application/GetAccount"
-import { RequestRide } from "../src/application/RequestRide"
-import { Signup } from "../src/application/Signup"
-import { AccountDAOMemory } from "../src/resources/AccountDAO"
-import { MailerGatewayMemory } from "../src/resources/MailerGateway"
-import { RideDAOMemory } from "../src/resources/RideDAO"
+import { GetRide } from "../src/application/GetRide";
+import { RequestRide } from "../src/application/RequestRide";
+import { Signup } from "../src/application/Signup";
+import { AccountDAODatabase } from "../src/resources/AccountDAO";
+import { MailerGatewayMemory } from "../src/resources/MailerGateway";
+import { RideDAODatabase } from "../src/resources/RideDAO";
 
 let signup: Signup
-let getAccount: GetAccount
+let requestRide: RequestRide
+let getRide: GetRide
 
 beforeEach(async () => {
-  const accountDAO = new AccountDAOMemory()
+  const accountDAO = new AccountDAODatabase();
+  const rideDAO = new RideDAODatabase();
   const mailerGateway = new MailerGatewayMemory()
   signup = new Signup(accountDAO, mailerGateway);
-  getAccount = new GetAccount(accountDAO)
+  requestRide = new RequestRide(accountDAO, rideDAO)
+  getRide = new GetRide(accountDAO, rideDAO)
 })
 
-test("should create a new ride", async () => {
-  const passengerInput = {
+test("should request a new ride", async () => {
+  const signupInput = {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
     isPassenger: true
   };
-  const passenger = await signup.execute(passengerInput)
-  const rideInput = {
-    passengerId: passenger.accountId,
-    from: {
-      lat: -40,
-      long: -40
-    },
-    to: {
-      lat: -41,
-      long: -40
-    }
+  const signupOutput = await signup.execute(signupInput)
+  const requestRideInput = {
+    passengerId: signupOutput.accountId,
+    fromLat: -27.584905257808835,
+    fromLong: -48.545022195325124,
+    toLat: -27.496887588317275,
+    toLong: -48.522234807851476,
   }
-  const rideDAO = new RideDAOMemory()
-  const requestRide = new RequestRide(getAccount, rideDAO)
-  const outputRide = await requestRide.execute(rideInput)
-  expect(outputRide).toHaveProperty('rideId')
-  expect(outputRide.status).toBe("requested")
-  expect(outputRide.passengerId).toBe(passenger.accountId)
+  const requestRideOutput = await requestRide.execute(requestRideInput);
+  expect(requestRideOutput.rideId).toBeDefined()
+  const getRideInput = {
+    rideId: requestRideOutput.rideId
+  }
+  const getRideOutput = await getRide.execute(getRideInput)
+  expect(getRideOutput.rideId).toBe(getRideInput.rideId)
+  expect(getRideOutput.passengerId).toBe(requestRideInput.passengerId)
+  expect(getRideOutput.fromLat).toBe(requestRideInput.fromLat)
+  expect(getRideOutput.fromLong).toBe(requestRideInput.fromLong)
+  expect(getRideOutput.toLat).toBe(requestRideInput.toLat)
+  expect(getRideOutput.toLong).toBe(requestRideInput.toLong)
+  expect(getRideOutput.status).toBe("requested")
+  expect(getRideOutput.passengerName).toBe(signupInput.name)
+  expect(getRideOutput.passengerEmail).toBe(signupInput.email)
 })
 
-test("should throw if account is not a passenger", async () => {
-  const passengerInput = {
+test("Should not request a ride to a user that is not a passenger", async () => {
+  const signupInput = {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
     isPassenger: false
   };
-  const passenger = await signup.execute(passengerInput)
-  const rideInput = {
-    passengerId: passenger.accountId,
-    from: {
-      lat: -40,
-      long: -40
-    },
-    to: {
-      lat: -41,
-      long: -40
-    }
+  const signupOutput = await signup.execute(signupInput)
+  const requestRideInput = {
+    passengerId: signupOutput.accountId,
+    fromLat: -27.584905257808835,
+    fromLong: -48.545022195325124,
+    toLat: -27.496887588317275,
+    toLong: -48.522234807851476,
   }
-  const rideDAO = new RideDAOMemory()
-  const requestRide = new RequestRide(getAccount, rideDAO)
-  await expect(() => requestRide.execute(rideInput)).rejects.toThrow('User is not a passenger')
+  await expect(() => requestRide.execute(requestRideInput)).rejects.toThrow('User is not a passenger')
 })
 
-test("should throw if there is already an active ride", async () => {
-  const passengerInput = {
+test("should not request a ride if there is an active ride", async () => {
+  const signupInput = {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
     isPassenger: true
   };
-  const passenger = await signup.execute(passengerInput)
-  const rideInput = {
-    passengerId: passenger.accountId,
-    from: {
-      lat: -40,
-      long: -40
-    },
-    to: {
-      lat: -41,
-      long: -40
-    }
+  const signupOutput = await signup.execute(signupInput)
+  const requestRideInput = {
+    passengerId: signupOutput.accountId,
+    fromLat: -27.584905257808835,
+    fromLong: -48.545022195325124,
+    toLat: -27.496887588317275,
+    toLong: -48.522234807851476,
   }
-  const rideDAO = new RideDAOMemory()
-  const requestRide = new RequestRide(getAccount, rideDAO)
-  await requestRide.execute(rideInput)
-  await expect(() => requestRide.execute(rideInput)).rejects.toThrow('Active ride on course')
+  await requestRide.execute(requestRideInput);
+  await expect(() => requestRide.execute(requestRideInput)).rejects.toThrow('Active ride on course')
 })
