@@ -3,8 +3,8 @@ import Ride from "../application/Ride";
 
 export interface RideDAO {
   findRideById: (id: string) => Promise<Ride>
-  findActiveRide: (passengerId: string) => Promise<any>
-  createRide: (input: Ride) => Promise<any>
+  findActiveRide: (passengerId: string) => Promise<Ride>
+  createRide: (input: Ride) => Promise<void>
 }
 
 export class RideDAODatabase implements RideDAO {
@@ -28,7 +28,6 @@ export class RideDAODatabase implements RideDAO {
       [input.rideId, input.passengerId, input.fromLat, input.fromLong, input.toLat, input.toLong, input.status, input.date]
     );
     await dbConnection.$pool.end();
-    return response
   }
 }
 

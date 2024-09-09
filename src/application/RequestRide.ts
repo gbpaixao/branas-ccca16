@@ -24,6 +24,7 @@ export class RequestRide {
   }
 }
 
+// DTO
 type Input = {
   passengerId: string,
   fromLat: number,
@@ -32,6 +33,7 @@ type Input = {
   toLong: number,
 }
 
+// DTO
 type Output = {
   rideId: string
 }
