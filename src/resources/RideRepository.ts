@@ -1,13 +1,13 @@
 import pgPromise from "pg-promise";
 import Ride from "../application/Ride";
 
-export interface RideDAO {
+export interface RideRepository {
   findRideById: (id: string) => Promise<Ride>
   findActiveRide: (passengerId: string) => Promise<Ride>
   createRide: (input: Ride) => Promise<void>
 }
 
-export class RideDAODatabase implements RideDAO {
+export class RideRepositoryDatabase implements RideRepository {
   async findRideById(rideId: string) {
     const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
     const [rideData] = await dbConnection.query("select * from ccca16.ride where ride_id = $1", [rideId]);
@@ -31,7 +31,7 @@ export class RideDAODatabase implements RideDAO {
   }
 }
 
-export class RideDAOMemory implements RideDAO {
+export class RideRepositoryMemory implements RideRepository {
   rides: any[]
 
   constructor() {

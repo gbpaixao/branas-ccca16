@@ -3,7 +3,7 @@ import { RequestRide } from "../src/application/RequestRide";
 import { Signup } from "../src/application/Signup";
 import { AccountDAODatabase } from "../src/resources/AccountDAO";
 import { MailerGatewayMemory } from "../src/resources/MailerGateway";
-import { RideDAODatabase } from "../src/resources/RideDAO";
+import { RideRepositoryDatabase } from "../src/resources/RideRepository";
 
 let signup: Signup
 let requestRide: RequestRide
@@ -11,11 +11,11 @@ let getRide: GetRide
 
 beforeEach(async () => {
   const accountDAO = new AccountDAODatabase();
-  const rideDAO = new RideDAODatabase();
+  const rideRepository = new RideRepositoryDatabase();
   const mailerGateway = new MailerGatewayMemory()
   signup = new Signup(accountDAO, mailerGateway);
-  requestRide = new RequestRide(accountDAO, rideDAO)
-  getRide = new GetRide(accountDAO, rideDAO)
+  requestRide = new RequestRide(accountDAO, rideRepository)
+  getRide = new GetRide(accountDAO, rideRepository)
 })
 
 test("should request a new ride", async () => {
