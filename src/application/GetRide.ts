@@ -6,14 +6,14 @@ export class GetRide {
 
   async execute(input: Input): Promise<Output> {
     const ride = await this.rideDAO.findRideById(input.rideId)
-    const passenger = await this.accountDAO.findAccountById(ride.passenger_id)
+    const passenger = await this.accountDAO.findAccountById(ride.passengerId)
     return {
-      rideId: ride.ride_id,
-      passengerId: ride.passenger_id,
-      fromLat: parseFloat(ride.from_lat),
-      fromLong: parseFloat(ride.from_long),
-      toLat: parseFloat(ride.to_lat),
-      toLong: parseFloat(ride.to_long),
+      rideId: ride.rideId,
+      passengerId: ride.passengerId,
+      fromLat: ride.fromLat,
+      fromLong: ride.fromLong,
+      toLat: ride.toLat,
+      toLong: ride.toLong,
       status: ride.status,
       passengerName: passenger.name,
       passengerEmail: passenger.email,

@@ -1,9 +1,10 @@
 import pgPromise from "pg-promise";
+import Ride from "../application/Ride";
 
 export interface RideDAO {
-  findRideById: (id: string) => Promise<any>
+  findRideById: (id: string) => Promise<Ride>
   findActiveRide: (passengerId: string) => Promise<any>
-  createRide: (input: any) => Promise<any>
+  createRide: (input: Ride) => Promise<any>
 }
 
 export class RideDAODatabase implements RideDAO {
@@ -11,7 +12,7 @@ export class RideDAODatabase implements RideDAO {
     const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
     const [rideData] = await dbConnection.query("select * from ccca16.ride where ride_id = $1", [rideId]);
     await dbConnection.$pool.end();
-    return rideData
+    return Ride.restore(rideData.ride_id, rideData.passenger_id, parseFloat(rideData.from_lat), parseFloat(rideData.from_long), parseFloat(rideData.to_lat), parseFloat(rideData.to_long), rideData.status, rideData.date)
   }
 
   async findActiveRide(passengerId: string) {
