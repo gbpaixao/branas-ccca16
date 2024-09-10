@@ -1,4 +1,4 @@
-import { AccountDAODatabase } from "../src/resources/AccountDAO";
+import { AccountRepositoryDatabase } from "../src/resources/AccountRepository";
 
 test("Should create a record on 'account' table and find by id", async () => {
   const account = {
@@ -8,14 +8,14 @@ test("Should create a record on 'account' table and find by id", async () => {
 		cpf: "87748248800",
 		isPassenger: true
 	};
-  const accountDAO = new AccountDAODatabase()
-  await accountDAO.createAccount(account)
-  const savedAccount = await accountDAO.findAccountById(account.accountId)
-  expect(savedAccount.account_id).toBe(account.accountId)
+  const accountRepository = new AccountRepositoryDatabase()
+  await accountRepository.createAccount(account)
+  const savedAccount = await accountRepository.findAccountById(account.accountId)
+  expect(savedAccount.accountId).toBe(account.accountId)
   expect(savedAccount.name).toBe(account.name)
   expect(savedAccount.email).toBe(account.email)
   expect(savedAccount.cpf).toBe(account.cpf)
-  expect(savedAccount.is_passenger).toBe(account.isPassenger)
+  expect(savedAccount.isPassenger).toBe(account.isPassenger)
 })
 
 test("Should create a record on 'account' table and find by email", async () => {
@@ -26,12 +26,12 @@ test("Should create a record on 'account' table and find by email", async () => 
 		cpf: "87748248800",
 		isPassenger: true
 	};
-  const accountDAO = new AccountDAODatabase()
-  await accountDAO.createAccount(account)
-  const savedAccount = await accountDAO.findAccountByEmail(account.email)
-  expect(savedAccount.account_id).toBe(account.accountId)
-  expect(savedAccount.name).toBe(account.name)
-  expect(savedAccount.email).toBe(account.email)
-  expect(savedAccount.cpf).toBe(account.cpf)
-  expect(savedAccount.is_passenger).toBe(account.isPassenger)
+  const accountRepository = new AccountRepositoryDatabase()
+  await accountRepository.createAccount(account)
+  const savedAccount = await accountRepository.findAccountByEmail(account.email)
+  expect(savedAccount?.accountId).toBe(account.accountId)
+  expect(savedAccount?.name).toBe(account.name)
+  expect(savedAccount?.email).toBe(account.email)
+  expect(savedAccount?.cpf).toBe(account.cpf)
+  expect(savedAccount?.isPassenger).toBe(account.isPassenger)
 })

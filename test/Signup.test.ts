@@ -1,17 +1,18 @@
 
+import { Account } from "../src/application/Account";
 import { GetAccount } from "../src/application/GetAccount";
 import { Signup } from "../src/application/Signup";
-import { AccountDAODatabase, AccountDAOMemory } from "../src/resources/AccountDAO";
+import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../src/resources/AccountRepository";
 import { MailerGatewayMemory } from "../src/resources/MailerGateway";
 
 let signup: Signup
 let getAccount: GetAccount
 
 beforeEach(async () => {
-  const accountDAO = new AccountDAOMemory()
+  const accountRepository = new AccountRepositoryMemory()
   const mailerGateway = new MailerGatewayMemory()
-  signup = new Signup(accountDAO, mailerGateway);
-  getAccount = new GetAccount(accountDAO)
+  signup = new Signup(accountRepository, mailerGateway);
+  getAccount = new GetAccount(accountRepository)
 })
 
 test("Should create passenger account", async function () {
@@ -116,16 +117,19 @@ test("Should create passenger account com stub", async function () {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
-    isPassenger: true
+    carPlate: '',
+    isPassenger: true,
+    isDriver: false
   };
-  const createAccountStub = jest.spyOn(AccountDAODatabase.prototype, 'createAccount').mockResolvedValue(input)
-  const findAccountByEmailStub = jest.spyOn(AccountDAODatabase.prototype, 'findAccountByEmail').mockResolvedValue(null)
-  const findAccountByIdStub = jest.spyOn(AccountDAODatabase.prototype, 'findAccountById').mockResolvedValue(input)
-  const accountDAO = new AccountDAODatabase()
+  const account = Account.create(input.name, input.email, input.cpf, input.carPlate, input.isPassenger, input.isDriver)
+  const createAccountStub = jest.spyOn(AccountRepositoryDatabase.prototype, 'createAccount').mockResolvedValue()
+  const findAccountByEmailStub = jest.spyOn(AccountRepositoryDatabase.prototype, 'findAccountByEmail').mockResolvedValue(null)
+  const findAccountByIdStub = jest.spyOn(AccountRepositoryDatabase.prototype, 'findAccountById').mockResolvedValue(account)
+  const accountRepository = new AccountRepositoryDatabase()
   const mailerGateway = new MailerGatewayMemory()
-  const signup = new Signup(accountDAO, mailerGateway);
-  const getAccount = new GetAccount(accountDAO)
-  const outputSignup = await signup.execute(input)
+  const signup = new Signup(accountRepository, mailerGateway);
+  const getAccount = new GetAccount(accountRepository)
+  const outputSignup = await signup.execute(account)
   expect(outputSignup).toHaveProperty('accountId')
   const outputGetAccount = await getAccount.execute(outputSignup.accountId)
   expect(outputGetAccount.name).toBe(input.name)
@@ -144,10 +148,10 @@ test("Should create passenger account com spy", async function () {
     isPassenger: true
   };
   const sendSpy = jest.spyOn(MailerGatewayMemory.prototype, 'send')
-  const accountDAO = new AccountDAOMemory()
+  const accountRepository = new AccountRepositoryMemory()
   const mailerGateway = new MailerGatewayMemory()
-  const signup = new Signup(accountDAO, mailerGateway);
-  const getAccount = new GetAccount(accountDAO)
+  const signup = new Signup(accountRepository, mailerGateway);
+  const getAccount = new GetAccount(accountRepository)
   const outputSignup = await signup.execute(input)
   expect(outputSignup).toHaveProperty('accountId')
   const outputGetAccount = await getAccount.execute(outputSignup.accountId)
@@ -167,10 +171,10 @@ test("Should create passenger account com mock", async function () {
     isPassenger: true
   };
   const sendMock = jest.spyOn(MailerGatewayMemory.prototype, 'send').mockImplementation(async (email, subject, body) => { console.log("abc") });
-  const accountDAO = new AccountDAOMemory()
+  const accountRepository = new AccountRepositoryMemory()
   const mailerGateway = new MailerGatewayMemory()
-  const signup = new Signup(accountDAO, mailerGateway);
-  const getAccount = new GetAccount(accountDAO)
+  const signup = new Signup(accountRepository, mailerGateway);
+  const getAccount = new GetAccount(accountRepository)
   const outputSignup = await signup.execute(input)
   expect(outputSignup).toHaveProperty('accountId')
   const outputGetAccount = await getAccount.execute(outputSignup.accountId)

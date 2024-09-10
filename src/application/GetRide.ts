@@ -1,12 +1,12 @@
-import { AccountDAO } from "../resources/AccountDAO";
+import { AccountRepository } from "../resources/AccountRepository";
 import { RideRepository } from "../resources/RideRepository";
 
 export class GetRide {
-  constructor(private readonly accountDAO: AccountDAO, private readonly rideRepository: RideRepository) { }
+  constructor(private readonly accountRepository: AccountRepository, private readonly rideRepository: RideRepository) { }
 
   async execute(input: Input): Promise<Output> {
     const ride = await this.rideRepository.findRideById(input.rideId)
-    const passenger = await this.accountDAO.findAccountById(ride.passengerId)
+    const passenger = await this.accountRepository.findAccountById(ride.passengerId)
     return {
       rideId: ride.rideId,
       passengerId: ride.passengerId,

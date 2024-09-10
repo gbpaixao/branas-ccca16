@@ -3,7 +3,7 @@ import Ride from "../application/Ride";
 
 export interface RideRepository {
   findRideById: (id: string) => Promise<Ride>
-  findActiveRide: (passengerId: string) => Promise<Ride>
+  findActiveRide: (passengerId: string) => Promise<Ride | null>
   createRide: (input: Ride) => Promise<void>
 }
 
@@ -19,7 +19,8 @@ export class RideRepositoryDatabase implements RideRepository {
     const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
     const [rideData] = await dbConnection.query("select * from ccca16.ride where passenger_id = $1 and status <> 'completed' limit 1", [passengerId]);
     await dbConnection.$pool.end();
-    return rideData
+    if (rideData) return Ride.restore(rideData.ride_id, rideData.passenger_id, parseFloat(rideData.from_lat), parseFloat(rideData.from_long), parseFloat(rideData.to_lat), parseFloat(rideData.to_long), rideData.status, rideData.date)
+      else return null
   }
 
   async createRide(input: any) {

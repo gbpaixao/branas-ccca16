@@ -1,5 +1,5 @@
 import { Signup } from "../application/Signup"
-import { AccountDAOMemory } from "../resources/AccountDAO"
+import { AccountRepositoryMemory } from "../resources/AccountRepository"
 import { MailerGatewayMemory } from "../resources/MailerGateway"
 
 let input: any = {}
@@ -15,9 +15,9 @@ process.stdin.on("data", async (chunk) => {
     input.cpf = command.replace("cpf ", "")
   }
   if(command.startsWith("signup")) {
-    const accountDAO = new AccountDAOMemory()
+    const accountRepository = new AccountRepositoryMemory()
     const mailerGateway = new MailerGatewayMemory()
-    const signup = new Signup(accountDAO, mailerGateway)
+    const signup = new Signup(accountRepository, mailerGateway)
     const output = await signup.execute(input)
     console.log('output', output)
   }
