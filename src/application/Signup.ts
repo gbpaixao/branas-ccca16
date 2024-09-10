@@ -1,36 +1,21 @@
 import { AccountDAO } from "../resources/AccountDAO";
 import { MailerGateway } from "../resources/MailerGateway";
-import { validateCpf } from "./validateCpf";
+import { Account } from "./Account";
 
 export class Signup {
   constructor(
     private readonly accountDAO: AccountDAO,
     private readonly mailerGateway: MailerGateway,
-  ) {}
+  ) { }
 
   async execute(input: any) {
-    const account = input
-    account.id = crypto.randomUUID()
-    const existingAccount = await this.accountDAO.findAccountByEmail(account.email)
+    const existingAccount = await this.accountDAO.findAccountByEmail(input.email)
     if (existingAccount) throw new Error("Account already exists")
-    if (!this.isValidFullName(account.name)) throw new Error("Invalid name")
-    if (!this.isValidEmail(account.email)) throw new Error("Invalid email")
-    if (!validateCpf(account.cpf)) throw new Error("Invalid cpf")
-    if (account.isDriver && !this.isValidCarPlate(account.carPlate)) throw new Error("Invalid car plate")
+    const account = Account.create(input.name, input.email, input.cpf, input.carPlate, input.isPassenger, input.isDriver)
     await this.accountDAO.createAccount(account)
-  await this.mailerGateway.send(account.email, 'Welcome', "")
-    return { accountId: account.id }
+    await this.mailerGateway.send(account.email, 'Welcome', "")
+    return { accountId: account.accountId }
   }
 
-  private isValidFullName(name: string) {
-    return name.match(/[a-zA-Z] [a-zA-Z]+/)
-  }
 
-  private isValidEmail(email: string) {
-    return email.match(/^(.+)@(.+)$/)
-  }
-
-  private isValidCarPlate(carPlate: string) {
-    return carPlate.match(/[A-Z]{3}[0-9]{4}/)
-  }
 }

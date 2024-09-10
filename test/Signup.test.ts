@@ -19,7 +19,9 @@ test("Should create passenger account", async function () {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
-    isPassenger: true
+    carPlate: '',
+    isPassenger: true,
+    isDriver: false
   };
   const outputSignup = await signup.execute(input)
   expect(outputSignup).toHaveProperty('accountId')
@@ -157,7 +159,7 @@ test("Should create passenger account com spy", async function () {
   jest.restoreAllMocks();
 });
 
-test.skip("Should create passenger account com mock", async function () {
+test("Should create passenger account com mock", async function () {
   const input = {
     name: "John Doe",
     email: `john.doe${Math.random()}@gmail.com`,

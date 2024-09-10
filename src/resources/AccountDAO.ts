@@ -24,7 +24,7 @@ export class AccountDAODatabase implements AccountDAO {
   async createAccount(input: any) {
     const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
     const response = await dbConnection.query("insert into ccca16.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
-      [input.id, input.name, input.email, input.cpf, input.carPlate, !!input.isPassenger, !!input.isDriver]
+      [input.accountId, input.name, input.email, input.cpf, input.carPlate, !!input.isPassenger, !!input.isDriver]
     );
     await dbConnection.$pool.end();
     return response
@@ -39,7 +39,7 @@ export class AccountDAOMemory implements AccountDAO {
   }
   
   findAccountById(accountId: string): Promise<any> {
-    return this.accounts.find(account => account.id === accountId)
+    return this.accounts.find(account => account.accountId === accountId)
   }
   
   findAccountByEmail(email: string): Promise<any> {
