@@ -1,6 +1,6 @@
-import { AccountRepository } from "../resources/AccountRepository";
-import { MailerGateway } from "../resources/MailerGateway";
-import { Account } from "./Account";
+import { Account } from "../../domain/Account";
+import { MailerGateway } from "../../infra/gateway/MailerGateway";
+import { AccountRepository } from "../../infra/repository/AccountRepository";
 
 export class Signup {
   constructor(

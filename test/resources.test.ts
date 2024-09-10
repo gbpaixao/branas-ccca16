@@ -1,5 +1,5 @@
-import { Account } from "../src/application/Account";
-import { AccountRepositoryDatabase } from "../src/resources/AccountRepository";
+import { Account } from "../src/domain/Account";
+import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
 
 test("Should create a record on 'account' table and find by id", async () => {
   const input = {

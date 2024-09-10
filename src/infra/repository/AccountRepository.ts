@@ -1,5 +1,6 @@
 import pgPromise from "pg-promise";
-import { Account } from "../application/Account";
+import { Account } from "../../domain/Account";
+
 
 export interface AccountRepository {
   findAccountById(accountId: string): Promise<Account>;

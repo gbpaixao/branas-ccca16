@@ -1,9 +1,9 @@
-import { GetRide } from "../src/application/GetRide";
-import { RequestRide } from "../src/application/RequestRide";
-import { Signup } from "../src/application/Signup";
-import { AccountRepositoryDatabase } from "../src/resources/AccountRepository";
-import { MailerGatewayMemory } from "../src/resources/MailerGateway";
-import { RideRepositoryDatabase } from "../src/resources/RideRepository";
+import { GetRide } from "../src/application/usecase/GetRide";
+import { RequestRide } from "../src/application/usecase/RequestRide";
+import { Signup } from "../src/application/usecase/Signup";
+import { MailerGatewayMemory } from "../src/infra/gateway/MailerGateway";
+import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
+import { RideRepositoryDatabase } from "../src/infra/repository/RideRepository";
 
 let signup: Signup
 let requestRide: RequestRide

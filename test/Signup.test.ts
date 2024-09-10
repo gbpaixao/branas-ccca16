@@ -1,9 +1,9 @@
 
-import { Account } from "../src/application/Account";
-import { GetAccount } from "../src/application/GetAccount";
-import { Signup } from "../src/application/Signup";
-import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../src/resources/AccountRepository";
-import { MailerGatewayMemory } from "../src/resources/MailerGateway";
+import { GetAccount } from "../src/application/usecase/GetAccount";
+import { Signup } from "../src/application/usecase/Signup";
+import { Account } from "../src/domain/Account";
+import { MailerGatewayMemory } from "../src/infra/gateway/MailerGateway";
+import { AccountRepositoryDatabase, AccountRepositoryMemory } from "../src/infra/repository/AccountRepository";
 
 let signup: Signup
 let getAccount: GetAccount

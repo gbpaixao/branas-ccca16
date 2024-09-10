@@ -1,6 +1,6 @@
-import { Signup } from "../application/Signup"
-import { AccountRepositoryMemory } from "../resources/AccountRepository"
-import { MailerGatewayMemory } from "../resources/MailerGateway"
+import { Signup } from "./application/usecase/Signup"
+import { MailerGatewayMemory } from "./infra/gateway/MailerGateway"
+import { AccountRepositoryMemory } from "./infra/repository/AccountRepository"
 
 let input: any = {}
 process.stdin.on("data", async (chunk) => {

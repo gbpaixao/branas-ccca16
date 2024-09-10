@@ -1,6 +1,6 @@
-import { AccountRepository } from "../resources/AccountRepository";
-import { RideRepository } from "../resources/RideRepository";
-import Ride from "./Ride";
+import Ride from "../../domain/Ride";
+import { AccountRepository } from "../../infra/repository/AccountRepository";
+import { RideRepository } from "../../infra/repository/RideRepository";
 
 export class RequestRide {
   constructor(private readonly accountRepository: AccountRepository, private readonly rideRepository: RideRepository) { }

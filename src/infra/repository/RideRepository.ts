@@ -1,5 +1,5 @@
 import pgPromise from "pg-promise";
-import Ride from "../application/Ride";
+import Ride from "../../domain/Ride";
 
 export interface RideRepository {
   findRideById: (id: string) => Promise<Ride>

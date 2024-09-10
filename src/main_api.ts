@@ -1,8 +1,9 @@
 import express from "express";
-import { GetAccount } from "../application/GetAccount";
-import { Signup } from "../application/Signup";
-import { AccountRepositoryDatabase } from "../resources/AccountRepository";
-import { MailerGatewayMemory } from "../resources/MailerGateway";
+
+import { GetAccount } from "./application/usecase/GetAccount";
+import { Signup } from "./application/usecase/Signup";
+import { MailerGatewayMemory } from "./infra/gateway/MailerGateway";
+import { AccountRepositoryDatabase } from "./infra/repository/AccountRepository";
 
 const app = express();
 app.use(express.json());
@@ -22,9 +23,9 @@ app.post("/signup", async function (req, res) {
 
 app.get("/accounts/:accountId", async function (req, res) {
   const accountRepository = new AccountRepositoryDatabase()
-    const getAccount = new GetAccount(accountRepository)
-    const response = await getAccount.execute(req.params.accountId)
-    return res.json(response)
+  const getAccount = new GetAccount(accountRepository)
+  const response = await getAccount.execute(req.params.accountId)
+  return res.json(response)
 })
 
 app.listen(3000);
