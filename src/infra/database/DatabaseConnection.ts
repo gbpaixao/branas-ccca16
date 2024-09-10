@@ -1,3 +1,4 @@
+// Framework and driver
 import pgPromise from "pg-promise";
 
 export default interface DatabaseConnection {

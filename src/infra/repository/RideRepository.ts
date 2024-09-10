@@ -1,3 +1,5 @@
+// Interface adapter
+
 import pgPromise from "pg-promise";
 import Ride from "../../domain/Ride";
 

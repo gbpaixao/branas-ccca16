@@ -1,3 +1,5 @@
+// Interface adapter
+
 import { Account } from "../../domain/Account";
 import DatabaseConnection from "../database/DatabaseConnection";
 
