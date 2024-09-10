@@ -23,7 +23,7 @@ export class RideRepositoryDatabase implements RideRepository {
       else return null
   }
 
-  async createRide(input: any) {
+  async createRide(input: Ride) {
     const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
     await dbConnection.query("insert into ccca16.ride (ride_id, passenger_id, from_lat, from_long, to_lat, to_long, status, date) values ($1, $2, $3, $4, $5, $6, $7, $8)",
       [input.rideId, input.passengerId, input.fromLat, input.fromLong, input.toLat, input.toLong, input.status, input.date]

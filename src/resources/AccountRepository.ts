@@ -23,7 +23,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
     else return null
   }
   
-  async createAccount(input: any) {
+  async createAccount(input: Account) {
     const dbConnection = pgPromise()("postgres://postgres:postgres@localhost:5432/ccca16");
     await dbConnection.query("insert into ccca16.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
       [input.accountId, input.name, input.email, input.cpf, input.carPlate, !!input.isPassenger, !!input.isDriver]

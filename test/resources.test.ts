@@ -1,13 +1,17 @@
+import { Account } from "../src/application/Account";
 import { AccountRepositoryDatabase } from "../src/resources/AccountRepository";
 
 test("Should create a record on 'account' table and find by id", async () => {
-  const account = {
+  const input = {
     accountId: crypto.randomUUID(),
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "87748248800",
-		isPassenger: true
+    carPlate: '',
+		isPassenger: true,
+		isDriver: false,
 	};
+  const account = Account.create(input.name, input.email, input.cpf, input.carPlate, input.isPassenger, input.isDriver)
   const accountRepository = new AccountRepositoryDatabase()
   await accountRepository.createAccount(account)
   const savedAccount = await accountRepository.findAccountById(account.accountId)
@@ -19,13 +23,16 @@ test("Should create a record on 'account' table and find by id", async () => {
 })
 
 test("Should create a record on 'account' table and find by email", async () => {
-  const account = {
+  const input = {
     accountId: crypto.randomUUID(),
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "87748248800",
-		isPassenger: true
+    carPlate: '',
+		isPassenger: true,
+		isDriver: false,
 	};
+  const account = Account.create(input.name, input.email, input.cpf, input.carPlate, input.isPassenger, input.isDriver)
   const accountRepository = new AccountRepositoryDatabase()
   await accountRepository.createAccount(account)
   const savedAccount = await accountRepository.findAccountByEmail(account.email)
