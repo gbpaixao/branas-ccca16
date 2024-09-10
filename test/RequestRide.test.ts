@@ -1,6 +1,7 @@
 import { GetRide } from "../src/application/usecase/GetRide";
 import { RequestRide } from "../src/application/usecase/RequestRide";
 import { Signup } from "../src/application/usecase/Signup";
+import DatabaseConnection, { PgPromiseAdapter } from "../src/infra/database/DatabaseConnection";
 import { MailerGatewayMemory } from "../src/infra/gateway/MailerGateway";
 import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
 import { RideRepositoryDatabase } from "../src/infra/repository/RideRepository";
@@ -8,14 +9,20 @@ import { RideRepositoryDatabase } from "../src/infra/repository/RideRepository";
 let signup: Signup
 let requestRide: RequestRide
 let getRide: GetRide
+let connection: DatabaseConnection
 
 beforeEach(async () => {
-  const accountRepository = new AccountRepositoryDatabase();
+  connection = new PgPromiseAdapter()
+  const accountRepository = new AccountRepositoryDatabase(connection);
   const rideRepository = new RideRepositoryDatabase();
   const mailerGateway = new MailerGatewayMemory()
   signup = new Signup(accountRepository, mailerGateway);
   requestRide = new RequestRide(accountRepository, rideRepository)
   getRide = new GetRide(accountRepository, rideRepository)
+})
+
+afterEach(() => {
+  connection.close()
 })
 
 test("should request a new ride", async () => {

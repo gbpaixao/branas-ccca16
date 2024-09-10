@@ -1,4 +1,5 @@
 import { Account } from "../src/domain/Account";
+import { PgPromiseAdapter } from "../src/infra/database/DatabaseConnection";
 import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
 
 test("Should create a record on 'account' table and find by id", async () => {
@@ -12,7 +13,8 @@ test("Should create a record on 'account' table and find by id", async () => {
 		isDriver: false,
 	};
   const account = Account.create(input.name, input.email, input.cpf, input.carPlate, input.isPassenger, input.isDriver)
-  const accountRepository = new AccountRepositoryDatabase()
+  const connection = new PgPromiseAdapter()
+  const accountRepository = new AccountRepositoryDatabase(connection)
   await accountRepository.createAccount(account)
   const savedAccount = await accountRepository.findAccountById(account.accountId)
   expect(savedAccount.accountId).toBe(account.accountId)
@@ -20,6 +22,7 @@ test("Should create a record on 'account' table and find by id", async () => {
   expect(savedAccount.email).toBe(account.email)
   expect(savedAccount.cpf).toBe(account.cpf)
   expect(savedAccount.isPassenger).toBe(account.isPassenger)
+  await connection.close()
 })
 
 test("Should create a record on 'account' table and find by email", async () => {
@@ -33,7 +36,8 @@ test("Should create a record on 'account' table and find by email", async () => 
 		isDriver: false,
 	};
   const account = Account.create(input.name, input.email, input.cpf, input.carPlate, input.isPassenger, input.isDriver)
-  const accountRepository = new AccountRepositoryDatabase()
+  const connection = new PgPromiseAdapter()
+  const accountRepository = new AccountRepositoryDatabase(connection)
   await accountRepository.createAccount(account)
   const savedAccount = await accountRepository.findAccountByEmail(account.email)
   expect(savedAccount?.accountId).toBe(account.accountId)
@@ -41,4 +45,5 @@ test("Should create a record on 'account' table and find by email", async () => 
   expect(savedAccount?.email).toBe(account.email)
   expect(savedAccount?.cpf).toBe(account.cpf)
   expect(savedAccount?.isPassenger).toBe(account.isPassenger)
+  connection.close()
 })
