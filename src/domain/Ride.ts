@@ -8,6 +8,7 @@ export default class Ride {
     readonly toLong: number,
     readonly status: string,
     readonly date: Date,
+    readonly driverId?: string,
   ) { }
 
   // Static Factory Method
@@ -21,7 +22,7 @@ export default class Ride {
     const rideId = crypto.randomUUID()
     const status = 'requested'
     const date = new Date()
-    return new Ride(rideId, passengerId, fromLat, fromLong, toLat, toLong, status, date)
+    return new Ride(rideId, passengerId, fromLat, fromLong, toLat, toLong, status, date, undefined)
   }
 
   // Static Factory Method
@@ -33,7 +34,9 @@ export default class Ride {
     toLat: number,
     toLong: number,
     status: string,
-    date: Date) {
-    return new Ride(rideId, passengerId, fromLat, fromLong, toLat, toLong, status, date)
+    date: Date,
+    driverId?: string,
+  ) {
+    return new Ride(rideId, passengerId, fromLat, fromLong, toLat, toLong, status, date, driverId)
   }
 }
