@@ -18,7 +18,7 @@ test("Should create passenger account", async function () {
   expect(responseGetAccount.data.name).toBe(input.name)
   expect(responseGetAccount.data.email).toBe(input.email)
   expect(responseGetAccount.data.cpf).toBe(input.cpf)
-  expect(responseGetAccount.data.is_passenger).toBe(input.isPassenger)
+  expect(responseGetAccount.data.isPassenger).toBe(input.isPassenger)
 });
 
 test("Should throw an error when creating account with an invalid name", async function () {
